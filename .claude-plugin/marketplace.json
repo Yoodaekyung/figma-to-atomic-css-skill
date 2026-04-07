@@ -10,8 +10,8 @@
             "name": "figma-to-atomic-css",
             "description": "Convert Figma designs to HTML with Atomic CSS classes via Figma MCP integration",
             "source": {
-                "type": "git",
-                "url": "https://github.com/Yoodaekyung/figma-to-atomic-css-skill"
+                "source": "github",
+                "repo": "Yoodaekyung/figma-to-atomic-css-skill"
             }
         }
     ]
