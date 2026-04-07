@@ -1,14 +1,18 @@
 {
-    "name": "Figma to Atomic CSS Skill",
-    "description": "Convert Figma designs to HTML using only Atomic CSS utility classes. Grid-first layout, pixel-perfect color accuracy, 4px spacing snap.",
-    "plugins": {
-        "figma": {
-            "name": "Figma to Atomic CSS",
+    "name": "figma-to-atomic-css-skill",
+    "description": "Convert Figma designs to HTML using only Atomic CSS utility classes",
+    "owner": {
+        "name": "Yoodaekyung",
+        "url": "https://github.com/Yoodaekyung"
+    },
+    "plugins": [
+        {
+            "name": "figma-to-atomic-css",
             "description": "Convert Figma designs to HTML with Atomic CSS classes via Figma MCP integration",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Yoodaekyung/figma-to-atomic-css-skill.git"
+                "url": "https://github.com/Yoodaekyung/figma-to-atomic-css-skill"
             }
         }
-    }
+    ]
 }
