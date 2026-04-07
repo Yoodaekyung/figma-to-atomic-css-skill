@@ -1,0 +1,8 @@
+{
+    "name": "figma-to-atomic-css",
+    "description": "Convert Figma designs to HTML with Atomic CSS classes",
+    "version": "1.0.0",
+    "author": {
+        "name": "Yoodaekyung"
+    }
+}
