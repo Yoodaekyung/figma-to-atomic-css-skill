@@ -25,6 +25,26 @@ argument-hint: "[Figma URL 또는 구현할 디자인 설명]"
 
 큰 페이지도 자동 분할로 처리 가능.
 
+### 절대 금지
+- **추론으로 HTML 작성 금지** — MCP 검증 없이 "아마 이 클래스일 것이다"로 작성하면 안 됨
+- **일반 CSS 클래스 사용 금지** — `class="header"`, `class="card-title"` 같은 시맨틱 클래스명은 Atomic CSS가 아님
+- **`<style>` 태그나 CSS 파일 생성 금지** — 어떤 상황에서도 별도 CSS를 만들지 않음
+- **Figma 데이터가 불완전해도 추측 금지** — 누락된 정보는 사용자에게 질문
+
+### Figma MCP가 HTML+CSS 코드를 반환하는 경우 (우선 경로)
+
+Figma MCP(`get_design_context` 등)가 HTML+CSS 코드를 반환하면, CSS 속성을 직접 추출할 수 있어 더 정확합니다:
+
+1. **HTML+CSS 코드 수신** — Figma MCP에서 코드 출력을 받음
+2. **CSS 속성 추출** — 코드에서 사용된 CSS 선언(color, padding, display 등)을 수집
+3. **`css_to_classes`로 Atomic 변환** — 추출한 CSS를 Atomic CSS 클래스로 변환
+4. **HTML 재구성** — Atomic 클래스로 교체한 HTML을 생성
+5. **`validate_classes`로 검증** — 최종 검증 후 출력
+
+> Figma MCP가 코드를 반환하지 않고 메타데이터만 반환하는 경우, 아래 기본 분할 전략으로 폴백합니다.
+
+### 기본 분할 전략 (메타데이터만 반환된 경우)
+
 **1-1. 최초 호출** — 전체 페이지 `get_design_context` 호출
 ```
 → 상세 데이터가 오면 → Step 2로
