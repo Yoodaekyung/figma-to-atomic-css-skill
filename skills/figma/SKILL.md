@@ -270,29 +270,46 @@ Flex는 아이콘+텍스트 같은 소규모 인라인 정렬에만 보조적으
 
 Figma에서 Auto Layout 없이 **절대 좌표(x, y)로 자유 배치**된 자식 프레임들은 균일 Grid로 강제 변환하지 말 것.
 
-**변환 절차:**
-1. **스크린샷 기준으로 시각적 행/열 그룹 파악** — 각 프레임의 x, y 좌표를 분석
-2. **동일 y 좌표 범위 → 같은 행**, 동일 x 좌표 범위 → 같은 열
-3. **열 수가 행마다 다르면** 각 행을 별도 Grid로 구성
-4. **각 프레임의 실제 너비를 `gtc` 값에 반영** — `gtcr5-auto` 같은 균일 반복 금지, 실제 크기 기반 `gtc{w1}px-{w2}px-...` 사용
+**좌표 분석 계산법:**
+1. **y좌표 ±20px로 클러스터링 → 행 그룹** — y값이 비슷한 프레임들을 같은 행으로 묶음
+2. **각 행 내 x좌표 정렬 → 열 순서** — x값 오름차순으로 정렬
+3. **프레임 너비로 fr 비율 계산** — 각 프레임의 width를 `{너비}fr`로 변환 (예: 150px, 302px, 112px → `150fr 302fr 112fr`)
+4. **행 간 gap 계산** — `다음 행 y - (현재 행 y + 현재 행 height)` = gap
+5. **행마다 열 수가 다르면** 각 행을 별도 Grid로 구성
+
+**fr 비율 기반 Grid (핵심):**
+- px 고정 → 왼쪽 쏠림, 나머지 공간 비어버림
+- 균등 1fr → 크기 차이 무시
+- **`{너비}fr` 비율** → 비율 유지 + 전체 채움 ✅
+
+> Atomic CSS에 임의 fr 비율 클래스는 없으므로, `:style` 인라인으로 `gridTemplateColumns`를 지정한다. 이 경우는 Atomic CSS 예외로 허용.
 
 ```html
-<!-- ❌ 크기가 다른 프레임을 균일 Grid로 강제 -->
-<div class="dg gtcr5-auto gap8px">
-    <div>STK-001 (200px)</div>
-    <div>STK-002 (300px)</div>
-    <div>STK-003 (150px)</div>
+<!-- ❌ 균등 1fr — 크기 차이 무시 -->
+<div class="dg gtcr5-1fr gap8px">
+    <div>STK-001 (150px)</div>
+    <div>STK-002 (302px)</div>
+    <div>STK-003 (112px)</div>
 </div>
 
-<!-- ✅ 실제 Figma 좌표/크기를 분석하여 반영 -->
-<div class="dg gtc200px-300px-150px gap8px">
+<!-- ❌ px 고정 — 왼쪽 쏠림, 나머지 공간 비어버림 -->
+<div class="dg gtc150px-302px-112px gap8px">
     <div>STK-001</div>
     <div>STK-002</div>
     <div>STK-003</div>
 </div>
+
+<!-- ✅ fr 비율 — 비율 유지 + 전체 채움 -->
+<div class="dg gap8px" :style="{ gridTemplateColumns: '150fr 302fr 112fr 530fr 150fr' }">
+    <div>STK-001</div>
+    <div>STK-002</div>
+    <div>STK-003</div>
+    <div>STK-004</div>
+    <div>STK-005</div>
+</div>
 ```
 
-> **원칙: Figma 좌표를 무시하고 균일 그리드로 단순화하면 레이아웃 전체가 달라진다. 반드시 실제 크기를 반영할 것.**
+> **원칙: Figma 좌표를 무시하고 균일 그리드로 단순화하면 레이아웃 전체가 달라진다. 반드시 좌표를 분석하고 fr 비율로 반영할 것.**
 
 ### 절대 위치 요소 (오버레이/배지)
 
